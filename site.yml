@@ -1,0 +1,22 @@
+---
+
+- name: deploy ec2 instance
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  remote_user: ec2-user
+
+  roles:
+    - deploy
+  tags:
+    - deploy
+
+- name: configure selinux
+  hosts: all
+  become: true
+  remote_user: ec2-user
+
+  roles:
+    - selinux
+  tags:
+    - selinux
