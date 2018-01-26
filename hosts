@@ -1,2 +1,5 @@
 [local]
 localhost
+
+[zabbix-server]
+35.177.136.222

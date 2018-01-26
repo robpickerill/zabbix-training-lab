@@ -1,0 +1,16 @@
+---
+
+- name: yum clean metadata
+  command: yum clean metadata
+  args:
+    warn: false
+
+- name: restart mariadb
+  service:
+    name: mysql
+    state: restarted
+
+- name: restart zabbix server
+  service:
+    name: zabbix-server
+    state: restarted

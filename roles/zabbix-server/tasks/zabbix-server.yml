@@ -1,0 +1,49 @@
+---
+
+- name: set up official zabbix repo
+  yum_repository:
+    name: "{{ item.key }}-{{ zabbix_release }}"
+    description: "{{ item.value.desc }}"
+    baseurl: "{{ item.value.baseurl }}"
+    file: "zabbix-official-{{ zabbix_release }}"
+    gpgcheck: "{{ item.value.gpgcheck | default(omit) }}"
+    enabled: "{{ item.value.enabled | default(omit) }}"
+  notify: yum clean metadata
+  with_dict: "{{ zabbix_repos }}"
+ 
+- name: install zabbix official gpg key
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ zabbix_gpg_keys }}"
+
+- meta: flush_handlers
+
+- name: install zabbix server packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ zabbix_packages }}"
+
+- name: copy zabbix server configuration
+  template:
+    src: server/zabbix_server.conf.j2
+    dest: /etc/zabbix/zabbix_server.conf
+    owner: root
+    group: root
+    mode: 0660
+  notify: restart zabbix server
+
+- name: start zabbix server
+  service:
+    name: zabbix-server
+    state: started
+    enabled: true
+
+- meta: flush_handlers
+
+- name: wait for zabbix-server
+  wait_for:
+    port: 10051

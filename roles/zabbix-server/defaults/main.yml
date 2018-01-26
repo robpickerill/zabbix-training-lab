@@ -1,0 +1,40 @@
+---
+
+mariadb_release: 10.2
+ 
+mariadb_gpg_keys:
+  - https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+
+mariadb_packages:
+  - MariaDB-server
+  - MariaDB-client
+  - MySQL-python27
+
+mariadb_port: 3306
+
+zabbix_release: 3.4
+
+zabbix_repos:
+  zabbix-official:
+    desc: zabbix-official/{{ zabbix_release }}
+    baseurl: https://repo.zabbix.com/zabbix/{{ zabbix_release }}/rhel/6/$basearch/ 
+  zabbix-deprecated:
+    desc: zabbix-deprecated/{{ zabbix_release }}
+    baseurl: https://repo.zabbix.com/zabbix/{{ zabbix_release }}/rhel/6/$basearch/deprecated/
+    enabled: false
+  zabbix-nonsupported:
+    desc: zabbix-nonsupported/{{ zabbix_release }}
+    baseurl: http://repo.zabbix.com/non-supported/rhel/6/$basearch/
+ 
+zabbix_gpg_keys:
+  - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
+  - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-79EA5ED4
+  - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-A14FE591-EL5
+  - https://repo.zabbix.com/zabbix-official-repo.key
+
+zabbix_packages:
+  - zabbix-server-mysql
+  - zabbix-web-mysql
+  - zabbix-agent
+  - zabbix-sender
+  - zabbix-get

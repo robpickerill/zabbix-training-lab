@@ -1,0 +1,10 @@
+---
+
+- name: prepare system users
+  include_tasks: zabbix-user.yml
+
+- name: prepare mariadb database
+  include_tasks: mariadb.yml
+
+- name: include zabbix-server tasks
+  include_tasks: zabbix-server.yml

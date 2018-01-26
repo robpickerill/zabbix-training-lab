@@ -20,3 +20,13 @@
     - selinux
   tags:
     - selinux
+
+- name: deploy zabbix server
+  hosts: zabbix-server
+  become: true
+  remote_user: ec2-user
+
+  roles:
+    - zabbix-server
+  tags:
+    - zabbix-server

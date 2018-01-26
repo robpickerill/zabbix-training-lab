@@ -1,0 +1,160 @@
+---
+
+- name: tune sysctl for db
+  sysctl:
+    name: vm.swappiness
+    value: 0
+    state: present
+    sysctl_set: true
+
+- name: set up official zabbix repo
+  yum_repository:
+    name: "mariadb-{{ mariadb_release }}"
+    description: "mariadb {{ mariadb_release }} repository"
+    baseurl: "http://yum.mariadb.org/{{ mariadb_release }}/centos6-amd64"
+    file: "mariadb-{{ mariadb_release }}"
+    gpgcheck: true
+  notify: yum clean metadata
+
+- name: install mariadb official gpg key
+  rpm_key:
+    key: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mariadb_gpg_keys }}"
+
+- meta: flush_handlers
+
+- name: install mariadb packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mariadb_packages }}"
+  notify: restart mariadb
+
+- name: copy mariadb server.cnf
+  template:
+    src: mariadb/server.cnf.j2
+    dest: /etc/my.cnf.d/server.cnf
+    owner: root
+    group: root
+    mode: 0660
+
+- name: ensure mariadb is started
+  service:
+    name: mysql
+    state: started
+    enabled: yes
+
+- meta: flush_handlers
+
+- name: wait for MariaDB port
+  wait_for:
+    port: "{{ mariadb_port | default('3306') }}"
+
+- name: drop root remote user
+  command: 'mysql -NBe "{{ item }}"'
+  with_items:
+    - DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')
+  changed_when: false
+
+- name: drop test db
+  mysql_db: 
+    name: test 
+    state: absent
+
+- name: drop all anon users
+  mysql_user:
+    name: ''
+    host_all: yes
+    state: absent
+
+- name: check if mariadb root passwd is set
+  shell: >
+    mysqladmin -u root status
+  changed_when: false
+  failed_when: false
+  register: mariadb_root_passwd_check
+
+- name: generate random root passwd
+  shell: >
+    openssl rand -hex 32
+  register: mariadb_root_passwd
+
+- name: set mariadb root password
+  mysql_user:
+    name: root
+    password: "{{ mariadb_root_passwd.stdout }}"
+    host_all:
+    state: present
+  when: mariadb_root_passwd_check.rc == 1
+
+- name: store root .my.cnf 
+  template:
+    src: mariadb/root_my_cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0660
+  when: mariadb_root_passwd_check.rc == 1
+
+- name: create zabbix db
+  mysql_db:
+    name: zabbix
+    encoding: utf8
+    collation: utf8_bin
+    state: present
+  register: zabbix_db
+
+- name: check if mariadb zabbix passwd is set
+  shell: >
+    mysqladmin -u zabbix status
+  changed_when: false
+  failed_when: false
+  register: mariadb_zabbix_passwd_check
+  become: true
+  become_user: zabbix
+
+- name: capture mariadb zabbix passwd if set
+  shell: > 
+    awk -F = '/password/ {print $2}' ~/.my.cnf
+  changed_when: false
+  register: mariadb_zabbix_passwd_old
+  when: mariadb_zabbix_passwd_check.rc == 0
+  become: true
+  become_user: zabbix
+
+- name: generate random zabbix passwd
+  shell: >
+    openssl rand -hex 32
+  register: mariadb_zabbix_passwd_new
+  when: mariadb_zabbix_passwd_check.rc == 1
+
+- name: dump passwords to shell
+  debug:
+    msg: "Zabbix old: {{ mariadb_zabbix_passwd_old }} / Zabbix new: {{ mariadb_zabbix_passwd_new }}"
+
+- name: set mariadb zabbix password
+  mysql_user:
+    name: zabbix
+    password: "{{ mariadb_zabbix_passwd_new.stdout }}"
+    priv: 'zabbix.*:ALL'
+    state: present
+  when: mariadb_zabbix_passwd_check.rc == 1
+
+- name: store zabbix .my.cnf
+  template:
+    src: mariadb/zabbix_my_cnf.j2
+    dest: /home/zabbix/.my.cnf
+    owner: zabbix
+    group: zabbix
+    mode: 0660
+  when: mariadb_zabbix_passwd_check.rc == 1
+
+- name: import zabbix schema
+  mysql_db:
+    name: zabbix
+    state: import
+    target: /usr/share/doc/zabbix-server-mysql-3.4.6/create.sql.gz
+  when: zabbix_db.changed

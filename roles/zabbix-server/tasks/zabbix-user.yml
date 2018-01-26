@@ -1,0 +1,12 @@
+---
+
+- name: create zabbix group
+  group:
+    name: zabbix
+
+- name: create zabbix user
+  user:
+    name: zabbix
+    comment: "zabbix monitoring system"
+    group: zabbix
+    shell: /bin/nologin
