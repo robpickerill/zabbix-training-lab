@@ -9,4 +9,4 @@
     name: zabbix
     comment: "zabbix monitoring system"
     group: zabbix
-    shell: /bin/nologin
+    shell: /sbin/nologin
