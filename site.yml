@@ -12,8 +12,9 @@
     - deploy
 
 - name: deploy zabbix server
-  hosts: tag_Name_zabbix_server
+  hosts: zabbix-server
   become: true
+  become_user: root
   remote_user: ec2-user
 
   roles:

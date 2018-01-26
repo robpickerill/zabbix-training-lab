@@ -67,17 +67,20 @@
 - name: drop all anon users
   mysql_user:
     name: ''
-    host_all: yes
+    host_all: true
     state: absent
 
 - name: set mariadb root password
   mysql_user:
     name: root
     password: "{{ mariadb_root_passwd }}"
-    host_all:
-    state: present
+    host_all: true
 
-- name: store root .my.cnf 
+- name: debug mariadb root passwd
+  debug:
+    var: mariadb_root_passwd
+
+- name: store root .my.cnf
   template:
     src: mariadb/root_my_cnf.j2
     dest: /root/.my.cnf

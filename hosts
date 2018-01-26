@@ -2,5 +2,4 @@
 localhost
 
 [zabbix-server]
-52.56.84.136
-35.177.121.101
+tag_Name_zabbix-server
