@@ -8,3 +8,12 @@
 
 - name: include zabbix-server tasks
   include_tasks: zabbix-server.yml
+
+- name: include httpd front end tasks
+  include_tasks: httpd.yml
+
+- name: include zabbix agent
+  include_tasks: zabbix-agent.yml
+
+- name: include iptables tasks
+  include_tasks: iptables.yml

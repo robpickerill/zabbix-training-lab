@@ -36,6 +36,25 @@
     mode: 0660
   notify: restart zabbix server
 
+- name: import zabbix schema
+  mysql_db:
+    name: zabbix
+    state: import
+    target: /usr/share/doc/zabbix-server-mysql-3.4.6/create.sql.gz
+  when: zabbix_db.changed
+
+- name: change admin password for zabbix frontend
+  shell: >
+    mysql -e "update zabbix.users set passwd=md5('{{ zabbix_admin_passwd }}') where alias='Admin'"
+
+- name: store zabbix admin frontend passwd for zabbix user
+  template:
+    src: server/zabbix_admin_passwd
+    dest: ~/zabbix_admin_passwd
+    owner: zabbix
+    group: zabbix
+    mode: 0660
+
 - name: start zabbix server
   service:
     name: zabbix-server

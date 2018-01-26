@@ -1,0 +1,48 @@
+---
+
+- name: allow related and established packets inbound
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+
+- name: allow icmp
+  iptables:
+    chain: INPUT
+    protocol: icmp
+    jump: ACCEPT
+
+- name: set iptables input rules
+  iptables:
+    chain: INPUT
+    protocol: tcp
+    destination_port: "{{ item }}"
+    jump: ACCEPT
+  with_items:
+    - "{{ zabbix_frontend_ports }}"
+    - "{{ zabbix_server_ports }}"
+    - "{{ zabbix_agent_ports }}"
+    - 22
+
+- name: allow locahost
+  iptables:
+    chain: INPUT
+    source: 127.0.0.1
+    jump: ACCEPT
+
+- name: drop all other input
+  iptables:
+    chain: INPUT
+    policy: DROP
+
+- name: drop all forward traffic
+  iptables:
+    chain: FORWARD
+    policy: DROP
+
+- name: save iptables rules
+  shell: >
+    service iptables save
+  changed_when: false
+
+

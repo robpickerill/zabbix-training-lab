@@ -34,7 +34,31 @@ zabbix_gpg_keys:
 
 zabbix_packages:
   - zabbix-server-mysql
-  - zabbix-web-mysql
   - zabbix-agent
   - zabbix-sender
   - zabbix-get
+
+zabbix_admin_passwd: GkcRWWk
+mariadb_root_passwd: cU1TD1RoU6JsuSCb8Ve+RWjuaKcaZTbAvCGUiIgCv9o=
+mariadb_zabbix_passwd: 59J7xgdBeXZf6aA3IybYbd7j3nDkVm+Cvb7KGim300U= 
+
+web_packages:
+  - zabbix-web-mysql
+  - httpd24
+  - php71
+  - php71-bcmath
+  - php71-gd
+  - php71-mbstring
+  - php71-ldap
+  - php71-mysqlnd
+  - php71-opcache
+
+zabbix_frontend_ports:
+  - 80
+  - 443
+
+zabbix_server_ports:
+  - 10051
+
+zabbix_agent_ports:
+  - 10050

@@ -14,3 +14,13 @@
   service:
     name: zabbix-server
     state: restarted
+
+- name: reload httpd
+  service:
+    name: httpd
+    state: reloaded
+
+- name: restart zabbix agent
+  service:
+    name: zabbix-agent
+    state: restarted

@@ -70,25 +70,12 @@
     host_all: yes
     state: absent
 
-- name: check if mariadb root passwd is set
-  shell: >
-    mysqladmin -u root status
-  changed_when: false
-  failed_when: false
-  register: mariadb_root_passwd_check
-
-- name: generate random root passwd
-  shell: >
-    openssl rand -hex 32
-  register: mariadb_root_passwd
-
 - name: set mariadb root password
   mysql_user:
     name: root
-    password: "{{ mariadb_root_passwd.stdout }}"
+    password: "{{ mariadb_root_passwd }}"
     host_all:
     state: present
-  when: mariadb_root_passwd_check.rc == 1
 
 - name: store root .my.cnf 
   template:
@@ -97,7 +84,6 @@
     owner: root
     group: root
     mode: 0660
-  when: mariadb_root_passwd_check.rc == 1
 
 - name: create zabbix db
   mysql_db:
@@ -107,41 +93,12 @@
     state: present
   register: zabbix_db
 
-- name: check if mariadb zabbix passwd is set
-  shell: >
-    mysqladmin -u zabbix status
-  changed_when: false
-  failed_when: false
-  register: mariadb_zabbix_passwd_check
-  become: true
-  become_user: zabbix
-
-- name: capture mariadb zabbix passwd if set
-  shell: > 
-    awk -F = '/password/ {print $2}' ~/.my.cnf
-  changed_when: false
-  register: mariadb_zabbix_passwd_old
-  when: mariadb_zabbix_passwd_check.rc == 0
-  become: true
-  become_user: zabbix
-
-- name: generate random zabbix passwd
-  shell: >
-    openssl rand -hex 32
-  register: mariadb_zabbix_passwd_new
-  when: mariadb_zabbix_passwd_check.rc == 1
-
-- name: dump passwords to shell
-  debug:
-    msg: "Zabbix old: {{ mariadb_zabbix_passwd_old }} / Zabbix new: {{ mariadb_zabbix_passwd_new }}"
-
 - name: set mariadb zabbix password
   mysql_user:
     name: zabbix
-    password: "{{ mariadb_zabbix_passwd_new.stdout }}"
+    password: "{{ mariadb_zabbix_passwd }}"
     priv: 'zabbix.*:ALL'
     state: present
-  when: mariadb_zabbix_passwd_check.rc == 1
 
 - name: store zabbix .my.cnf
   template:
@@ -150,11 +107,3 @@
     owner: zabbix
     group: zabbix
     mode: 0660
-  when: mariadb_zabbix_passwd_check.rc == 1
-
-- name: import zabbix schema
-  mysql_db:
-    name: zabbix
-    state: import
-    target: /usr/share/doc/zabbix-server-mysql-3.4.6/create.sql.gz
-  when: zabbix_db.changed

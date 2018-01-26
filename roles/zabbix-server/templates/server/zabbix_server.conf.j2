@@ -122,11 +122,7 @@ DBUser=zabbix
 #
 # Mandatory: no
 # Default:
-{% if mariadb_zabbix_passwd_old.stdout != None %}
-DBPassword={{ mariadb_zabbix_passwd_old.stdout }}
-{% elif mariadb_zabbix_passwd_new.stdout != None %}
-DBPassword={{ mariadb_zabbix_passwd_new.stdout }}`
-{% endif %}
+DBPassword={{ mariadb_zabbix_passwd }}
 
 ### Option: DBSocket
 #       Path to MySQL socket.

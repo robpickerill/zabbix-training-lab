@@ -1,0 +1,38 @@
+---
+
+- name: install web packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ web_packages }}"
+  notify: reload httpd
+
+- name: copy php config for zabbix
+  template:
+    src: httpd/php_zabbix.conf.j2
+    dest: /etc/httpd/conf.d/zabbix.conf
+    owner: root
+    group: root
+    mode: 0660
+  notify: reload httpd
+
+- name: copy zabbix web configs
+  template:
+    src: httpd/web_zabbix.conf.php
+    dest: /etc/zabbix/web/zabbix.conf.php
+    owner: apache
+    group: apache
+    mode: 0660
+
+- name: start httpd
+  service:
+    name: httpd
+    state: started
+    enabled: true
+
+- meta: flush_handlers
+
+- name: wait for httpd to start
+  wait_for:
+    port: 80
