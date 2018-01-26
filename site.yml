@@ -11,18 +11,8 @@
   tags:
     - deploy
 
-- name: configure selinux
-  hosts: all
-  become: true
-  remote_user: ec2-user
-
-  roles:
-    - selinux
-  tags:
-    - selinux
-
 - name: deploy zabbix server
-  hosts: zabbix-server
+  hosts: tag_Name_zabbix_server
   become: true
   remote_user: ec2-user
 
