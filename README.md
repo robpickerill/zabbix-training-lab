@@ -16,7 +16,7 @@ source ansible/bin/activate
 - Install ansible in virtualenv:  
 pip install ansible
 
-- Clone the github repo:
+- Clone the github repo:  
 git clone https://github.com/robpickerill/zabbix-training-lab.git  
 cd zabbix-training-lab
 
