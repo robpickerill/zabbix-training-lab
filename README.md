@@ -17,7 +17,7 @@ Used to provision an ephemeral lab for Zabbix training on ec2 with amazon linux.
 
 To change the number of instances required, either set the count variable in roles/deploy/defaults/main.yml, or pass in count=$requirednumber of instances via the command line:
 
-ansible-playbook site.yml -e count=15
+ansible-playbook -i ec2.py site.yml -e count=15
 
 ## Pre-requisites
 
@@ -30,7 +30,7 @@ The site.yml has two tags:
  - deploy, used to only deploy instances  
 ansible-playbook -i ec2.py -t deploy site.yml
 
- - zabbix-server, used to only build zabbix-instances (please note you will need a static inventory for this, as the deploy role builds the dyanmic inventory)
+ - zabbix-server, used to only build zabbix-instances (please note you will need a static inventory for this, as the deploy role builds the dyanmic inventory)  
 ansible-playbook -i hosts -t zabbix-server site.yml  
 
 ## Using this repository
