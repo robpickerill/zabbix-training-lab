@@ -8,18 +8,18 @@ Ensure you have an aws access key and secret already configured on the shell env
 
 To use this repository:
 
-- Prepare  virtualenv:
-pip install virtualenv
-virtualenv --system-site-packages ansible
-source ansible/bin/activate
+- Prepare  virtualenv:  
+pip install virtualenv  
+virtualenv --system-site-packages ansible  
+source ansible/bin/activate  
 
-- Install ansible in virtualenv:
+- Install ansible in virtualenv:  
 pip install ansible
 
 - Clone the github repo:
-git clone https://github.com/robpickerill/zabbix-training-lab.git
+git clone https://github.com/robpickerill/zabbix-training-lab.git  
 cd zabbix-training-lab
 
-- Set variables and vault for ansible usage
+- Set variables and vault for ansible usage  
 export ANSIBLE_CONFIG=~/zabbix-training-lab/ansible.cfg
 echo 3vQuxIsH8YDAK/uhUpSWaAnpGKBqDlh8LEkAOlO/yj0= > ~/.vault
