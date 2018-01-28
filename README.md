@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/robpickerill/zabbix-training-lab.svg?branch=master)](https://travis-ci.org/robpickerill/zabbix-training-lab)
+
 # Zabbix Training Lab
 
 Used to provision an ephemeral lab for Zabbix training on ec2 with amazon linux. This will build a number of single zabbix systems, with its own mysql backend. The following components will be installed on each ec2 instance:
