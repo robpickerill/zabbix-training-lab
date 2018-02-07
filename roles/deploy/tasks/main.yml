@@ -27,7 +27,7 @@
 
 - name: add instances to zabbix-server group
   add_host:
-    hostname: "{{ item.public_dns_name }}"
+    hostname: "{{ item.public_ip }}"
     groupname: zabbix-server
   with_items: "{{ ec2.tagged_instances }}"
 

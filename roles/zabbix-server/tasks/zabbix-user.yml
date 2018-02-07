@@ -10,3 +10,25 @@
     comment: "zabbix monitoring system"
     group: zabbix
     shell: /sbin/nologin
+
+- name: deploy ssh config
+  template:
+    src: sshd_config
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    mode: 0660
+  notify: restart ssh
+
+- name: set ec2-user password
+  user:
+    name: ec2-user
+    password: $6$gnq0E2IeDX8x5mmX$juRdOKCkQvO8liPvulrRs8L3M0uq6Z3CcGHtl9vnlQ8zpN0nXzB30ineSTorrZk6r5lmrGi7p4.IE8DO1TVi4/
+
+- meta: flush_handlers
+
+- name: deploy pub ssh key to ec2-user
+  authorized_key:
+    user: ec2-user
+    state: present
+    key: ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEAnihNvzOeYhq5W+xB5Cze2AE90uGfZfNTwBhClAI9enVpFLqtV2Ta+3e6pL14SxRNG78TP2wMAiSr3tYPIHfHs8L5sEEBShvexCi0+Ef0UAOnjcZiFHWAEjb8V6T3vlZxljuIcZyabPgSoIovyMTJhH7fHIKFFVUeU3dPe3dz9jmHZT+4VsAYLCbL7W8Rw02mhMkkUyOrn5Tp5JNoKtXxeJJLVsBdX+rtIW29pcSEESjLcSO0DYDSZnJes32pzrFe4OmGDusBmw2ESWFwK7D8hzSCQOaz5CEozaWG8OiFLvxM0tP3MAgrVcN/56dajYWK6PWjtu6O/fNBVZW+0Tt95w== zabbix-training-lab

@@ -21,5 +21,5 @@ git clone https://github.com/robpickerill/zabbix-training-lab.git
 cd zabbix-training-lab
 
 - Set variables and vault for ansible usage
-export ANSIBLE_CONFIG=~/zabbix-training-lab/ansible.cfg
+export ANSIBLE_CONFIG=~/zabbix-training-lab/ansible.cfg  
 echo 3vQuxIsH8YDAK/uhUpSWaAnpGKBqDlh8LEkAOlO/yj0= > ~/.vault

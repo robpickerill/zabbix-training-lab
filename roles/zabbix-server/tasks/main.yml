@@ -1,5 +1,27 @@
 ---
 
+- name: update base packages
+  yum:
+    name: "*"
+    state: latest
+  register: yum
+
+- name: reboot ec2 instance for kernel updates
+  shell: sleep 2 && shutdown -r now "Ansible reboot for updates"
+  async: 1
+  poll: 0
+  when: yum.changed
+
+- name: wait for ec2 instance to come online
+  wait_for:
+    port: 22
+    host:  "{{ (ansible_ssh_host|default(ansible_host))|default(inventory_hostname) }}"
+    search_regex: OpenSSH
+    delay: 30
+    timeout: 300
+  connection: local
+  when: yum.changed
+
 - name: prepare system users
   include_tasks: zabbix-user.yml
 
@@ -17,3 +39,6 @@
 
 - name: include iptables tasks
   include_tasks: iptables.yml
+
+- name: dump variables
+  include_tasks: dump.yml

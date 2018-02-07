@@ -17,6 +17,8 @@
     state: present
   with_items:
     - "{{ zabbix_gpg_keys }}"
+  retries: 10
+  delay: 1
 
 - meta: flush_handlers
 

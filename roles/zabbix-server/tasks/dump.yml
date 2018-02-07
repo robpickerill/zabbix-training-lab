@@ -1,0 +1,5 @@
+---
+
+- name: dump admin password
+  debug:
+    msg: "Zabbix admin password: {{ zabbix_admin_passwd }}"
