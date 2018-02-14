@@ -6,6 +6,7 @@ before_install:
 
 install:
   - pip install ansible
+  - pip install ansible-lint
   
 script:
   - echo $VAULT > ~/.vault
