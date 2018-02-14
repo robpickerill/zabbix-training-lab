@@ -11,6 +11,4 @@ install:
 script:
   - echo $VAULT > ~/.vault
   - ansible-playbook -i hosts site.yml --syntax-check
- 
-script:
-   - ansible-lint *.yml
+  - ansible-lint *.yml
