@@ -1,7 +1,7 @@
 ---
 
 mariadb_release: 10.2
- 
+
 mariadb_gpg_keys:
   - https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 
@@ -17,7 +17,7 @@ zabbix_release: 3.4
 zabbix_repos:
   zabbix-official:
     desc: zabbix-official/{{ zabbix_release }}
-    baseurl: https://repo.zabbix.com/zabbix/{{ zabbix_release }}/rhel/6/$basearch/ 
+    baseurl: https://repo.zabbix.com/zabbix/{{ zabbix_release }}/rhel/6/$basearch/
   zabbix-deprecated:
     desc: zabbix-deprecated/{{ zabbix_release }}
     baseurl: https://repo.zabbix.com/zabbix/{{ zabbix_release }}/rhel/6/$basearch/deprecated/
@@ -25,7 +25,7 @@ zabbix_repos:
   zabbix-nonsupported:
     desc: zabbix-nonsupported/{{ zabbix_release }}
     baseurl: http://repo.zabbix.com/non-supported/rhel/6/$basearch/
- 
+
 zabbix_gpg_keys:
   - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX
   - https://repo.zabbix.com/RPM-GPG-KEY-ZABBIX-79EA5ED4
@@ -63,8 +63,6 @@ mariadb_zabbix_passwd: !vault |
           3033623731666462350a633366373435313265616634646437633630633365396331373738396432
           30326338346335316462303235653334313764366330306537656338626363383431356261306437
           6637656563653264363938383737353163383061616161326330
-
-
 
 web_packages:
   - zabbix-web-mysql

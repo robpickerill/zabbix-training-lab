@@ -50,6 +50,7 @@
 - name: change admin password for zabbix frontend
   shell: >
     mysql -e "update zabbix.users set passwd=md5('{{ zabbix_admin_passwd }}') where alias='Admin'"
+  changed_when: false
   tags:
     - skip_ansible_lint
 

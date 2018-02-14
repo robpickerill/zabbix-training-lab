@@ -1,5 +1,10 @@
 # ansible
 *.retry
+*.py[cod]
+.cache/
+.coverage
+.coverage.*
+.molecule/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
