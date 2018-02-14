@@ -11,5 +11,5 @@ script:
   - echo $VAULT > ~/.vault
   - ansible-playbook -i hosts site.yml --syntax-check
  
- script:
+script:
    - ansible-lint *.yml
