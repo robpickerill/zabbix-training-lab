@@ -25,7 +25,7 @@
     name: zabbix-agent
     state: restarted
 
-- name: restart ssh 
+- name: restart ssh
   service:
     name: sshd
     state: restarted

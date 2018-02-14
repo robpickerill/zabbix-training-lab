@@ -4,7 +4,7 @@
   yum:
     name: zabbix-agent
     state: present
- 
+
 - name: copy zabbix-agent config
   template:
     src: agent/zabbix_agentd.conf.j2

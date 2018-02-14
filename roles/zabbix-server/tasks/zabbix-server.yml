@@ -10,7 +10,7 @@
     enabled: "{{ item.value.enabled | default(omit) }}"
   notify: yum clean metadata
   with_dict: "{{ zabbix_repos }}"
- 
+
 - name: install zabbix official gpg key
   rpm_key:
     key: "{{ item }}"
@@ -44,10 +44,14 @@
     state: import
     target: /usr/share/doc/zabbix-server-mysql-3.4.6/create.sql.gz
   when: zabbix_db.changed
+  tags:
+    - skip_ansible_lint
 
 - name: change admin password for zabbix frontend
   shell: >
     mysql -e "update zabbix.users set passwd=md5('{{ zabbix_admin_passwd }}') where alias='Admin'"
+  tags:
+    - skip_ansible_lint
 
 - name: store zabbix admin frontend passwd for zabbix user
   template:

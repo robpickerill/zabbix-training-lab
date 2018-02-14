@@ -55,5 +55,5 @@
   shell: >
     service iptables save
   changed_when: false
-
-
+  tags:
+    - skip_ansible_lint

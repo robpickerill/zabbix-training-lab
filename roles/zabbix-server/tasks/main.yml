@@ -5,12 +5,16 @@
     name: "*"
     state: latest
   register: yum
+  tags:
+    - skip_ansible_lint
 
 - name: reboot ec2 instance for kernel updates
   shell: sleep 2 && shutdown -r now "Ansible reboot for updates"
   async: 1
   poll: 0
   when: yum.changed
+  tags:
+    - skip_ansible_lint
 
 - name: wait for ec2 instance to come online
   wait_for:
@@ -21,6 +25,8 @@
     timeout: 300
   connection: local
   when: yum.changed
+  tags:
+    - skip_ansible_lint
 
 - name: prepare system users
   include_tasks: zabbix-user.yml
